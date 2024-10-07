@@ -90,6 +90,17 @@ public class View implements PropertyChangeListener {
                 controller.edit(row);
             }
         });
+
+        report.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    controller.print();
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
     }
 
     public JPanel getPanel() {

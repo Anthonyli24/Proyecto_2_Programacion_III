@@ -59,7 +59,16 @@ public class View implements PropertyChangeListener {
                 }
             }
         });
-
+        report.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    controller.print();
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
 
         list.addMouseListener(new MouseAdapter() {
             @Override
