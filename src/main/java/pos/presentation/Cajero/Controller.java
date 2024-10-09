@@ -1,25 +1,24 @@
 package pos.presentation.Cajero;
 
+import com.itextpdf.layout.properties.HorizontalAlignment;
+import com.itextpdf.layout.properties.VerticalAlignment;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.layout.Document;
 import pos.logic.Service;
 import pos.logic.Cajero;
 import pos.Application;
 import java.util.List;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.io.font.constants.StandardFonts;
-import com.itextpdf.kernel.colors.Color;
-import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.property.TextAlignment;
-import com.itextpdf.layout.property.HorizontalAlignment;
-import com.itextpdf.layout.property.VerticalAlignment;
 
 public class Controller {
     private View view;
@@ -71,52 +70,76 @@ public class Controller {
         model.setMode(Application.MODE_CREATE);
         model.setCurrent(new Cajero());
     }
-    public void print()throws Exception{
-        String dest="cajeros.pdf";
+
+    public void print() throws Exception {
+        String dest = "cajeros.pdf";
         PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA);
-        PdfWriter writer = new PdfWriter(dest);
-        PdfDocument pdf = new PdfDocument(writer);
 
-        Document document = new Document(pdf);
-        document.setMargins(20, 20, 20, 20);
+        try (PdfWriter writer = new PdfWriter(dest);
+             PdfDocument pdf = new PdfDocument(writer);
+             Document document = new Document(pdf)) {
 
-        Table header = new Table(1);
-        header.setWidth(400);
-        header.setHorizontalAlignment(HorizontalAlignment.CENTER);
-        header.addCell(getCell(new Paragraph("Listado de Cajeros").setFont(font).setBold().setFontSize(20f), TextAlignment.CENTER,false));
-        document.add(header);
+            document.setMargins(20, 20, 20, 20);
 
-        document.add(new Paragraph(""));document.add(new Paragraph(""));
+            Table header = new Table(1);
+            header.setWidth(550);
+            header.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            header.addCell(getCell(new Paragraph("Listado de Cajeros")
+                    .setFont(font)
+                    .setBold()
+                    .setFontSize(22f), TextAlignment.CENTER, false));
+            document.add(header);
 
-        Color bkg = ColorConstants.RED;
-        Color frg= ColorConstants.WHITE;
-        Table body = new Table(2);
-        body.setWidth(400);
-        body.setHorizontalAlignment(HorizontalAlignment.CENTER);
-        body.addCell(getCell(new Paragraph("Id").setBackgroundColor(bkg).setFontColor(frg),TextAlignment.CENTER,true));
-        body.addCell(getCell(new Paragraph("Nombre").setBackgroundColor(bkg).setFontColor(frg),TextAlignment.CENTER,true));
+            document.add(new Paragraph(""));
+            document.add(new Paragraph(""));
 
-        for(Cajero e: model.getList()){
-            body.addCell(getCell(new Paragraph(e.getID()),TextAlignment.CENTER,true));
-            body.addCell(getCell(new Paragraph(e.getNombre()),TextAlignment.CENTER,true));
+            Color headerBkg = ColorConstants.DARK_GRAY;
+            Color headerFrg = ColorConstants.WHITE;
+            Color rowBkg1 = ColorConstants.LIGHT_GRAY;
+            Color rowBkg2 = ColorConstants.WHITE;
+
+            Table body = new Table(new float[]{2, 2});
+            body.setWidth(400);
+            body.setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+            body.addCell(getStyledHeaderCell("Id", headerBkg, headerFrg));
+            body.addCell(getStyledHeaderCell("Nombre", headerBkg, headerFrg));
+
+            boolean isOddRow = true;
+
+            for (Cajero e : model.getList()) {
+                Color rowBkg = isOddRow ? rowBkg1 : rowBkg2;
+                body.addCell(getStyledBodyCell(e.getID(), rowBkg));
+                body.addCell(getStyledBodyCell(e.getNombre(), rowBkg));
+                isOddRow = !isOddRow;
+            }
+            document.add(body);
         }
-        document.add(body);
-        document.close();
     }
 
-    private Cell getCell(Paragraph paragraph, TextAlignment alignment, boolean hasBorder) {
-        Cell cell = new Cell().add(paragraph);
-        cell.setPadding(0);
+    private Cell getStyledHeaderCell(String content, Color bkgColor, Color frgColor) {
+        return getCell(new Paragraph(content)
+                .setBold()
+                .setFontSize(12f)
+                .setBackgroundColor(bkgColor)
+                .setFontColor(frgColor)
+                .setPadding(5), TextAlignment.CENTER, true);
+    }
+
+    private Cell getStyledBodyCell(String content, Color bkgColor) {
+        return getCell(new Paragraph(content)
+                .setFontSize(10f)
+                .setPadding(5)
+                .setBackgroundColor(bkgColor), TextAlignment.CENTER, true);
+    }
+
+    private Cell getCell(Paragraph content, TextAlignment alignment, boolean border) {
+        Cell cell = new Cell().add(content);
         cell.setTextAlignment(alignment);
-        if(!hasBorder) cell.setBorder(Border.NO_BORDER);
-        return cell;
-    }
-
-    private Cell getCell(Image image, HorizontalAlignment alignment, boolean hasBorder) {
-        Cell cell = new Cell().add(image);
-        image.setHorizontalAlignment(alignment);
-        cell.setPadding(0);
-        if(!hasBorder) cell.setBorder(Border.NO_BORDER);
+        cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+        if (!border) {
+            cell.setBorder(Border.NO_BORDER);
+        }
         return cell;
     }
 }
