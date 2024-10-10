@@ -33,7 +33,29 @@ create table Producto (
        Primary Key (codigo)         
      );
 
+create table Lineas(
+    id varchar(10) not null,
+    idFactura varchar(10) not null,
+    producto varchar(10)  not null,
+    cantidad int not null,
+    descuento double not null,
+    PRIMARY KEY (id)
+);
+
+create table Facturas(
+     id varchar(10) not null,
+    fecha varchar(15) not null,
+    cliente varchar(10) not null,
+    cajero varchar(10) not null,
+    PRIMARY KEY (id)
+);
+
 ALTER TABLE Producto ADD Foreign Key (categoria) REFERENCES Categoria(id);
+
+ALTER TABLE Lineas ADD Foreign Key (idFactura) REFERENCES Facturas(id);
+
+ALTER TABLE Facturas ADD Foreign Key (cliente) REFERENCES Clientes(id);
+ALTER TABLE Facturas ADD Foreign Key (cajero) REFERENCES Cajeros(id);
 
 insert into Categoria (id, nombre) values ('CAT-001', 'Frutas y Verduras');
 insert into Categoria (id, nombre) values ('CAT-002', 'Carnes y Pescados');

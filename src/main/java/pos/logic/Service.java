@@ -1,9 +1,7 @@
 package pos.logic;
 
-import pos.data.CategoriaDao;
-import pos.data.ProductoDao;
-import pos.data.ClientesDao;
-import pos.data.CajeroDao;
+import pos.data.*;
+
 import java.util.List;
 
 public class Service {
@@ -18,14 +16,16 @@ public class Service {
     private CajeroDao cajeroDao;
     private CategoriaDao categoriaDao;
     private ProductoDao productoDao;
-
+    private LineaDao lineaDao;
+    private FacturaDao facturaDao;
     public Service() {
         try{
             clienteDao = new ClientesDao();
             cajeroDao = new CajeroDao();
             productoDao = new ProductoDao();
             categoriaDao = new CategoriaDao();
-
+            lineaDao = new LineaDao();
+            facturaDao = new FacturaDao();
         }
         catch(Exception e){
         }
@@ -93,4 +93,43 @@ public class Service {
             throw new RuntimeException(ex);
         }
     }
+
+    //============= LINEAS =============
+    public void create(Linea e) throws Exception { lineaDao.create(e); }
+
+    public Linea read(Linea e) throws Exception { return lineaDao.read(e.getNumero()); }
+
+    public void update(Linea e) throws Exception { lineaDao.update(e); }
+
+    public void delete(Linea e) throws Exception { lineaDao.delete(e); }
+
+    public List<Linea> search(Linea e) {
+        try {
+            return lineaDao.search(e);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    //========== FACTURAS ==========
+    public void create(Factura e) throws Exception { facturaDao.create(e); }
+
+    public Factura read(Factura e) throws Exception { return facturaDao.read(e.getID()); }
+
+    public void update(Factura e) throws Exception { facturaDao.update(e); }
+
+    public void delete(Factura e) throws Exception { facturaDao.delete(e); }
+
+    public List<Factura> search(Factura e) {
+        try {
+            return facturaDao.search(e);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+
+
+
+
  }
