@@ -16,7 +16,6 @@ public class Factura {
         fecha = "";
         cliente = new Cliente();
         cajero = new Cajero();
-
     }
 
     public Factura(String ID, String fecha,Cliente cliente, Cajero cajero, List<Linea> lineas) {

@@ -35,7 +35,6 @@ create table Producto (
 
 create table Lineas(
     id varchar(10) not null,
-    idFactura varchar(10) not null,
     producto varchar(10)  not null,
     cantidad int not null,
     descuento double not null,
@@ -51,9 +50,6 @@ create table Facturas(
 );
 
 ALTER TABLE Producto ADD Foreign Key (categoria) REFERENCES Categoria(id);
-
-ALTER TABLE Lineas ADD Foreign Key (idFactura) REFERENCES Facturas(id);
-
 ALTER TABLE Facturas ADD Foreign Key (cliente) REFERENCES Clientes(id);
 ALTER TABLE Facturas ADD Foreign Key (cajero) REFERENCES Cajeros(id);
 

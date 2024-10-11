@@ -20,6 +20,7 @@ import pos.logic.Cajero;
 import pos.Application;
 import java.util.List;
 
+
 public class Controller {
     private View view;
     private Model model;
@@ -58,7 +59,7 @@ public class Controller {
         try {
             model.setMode(Application.MODE_EDIT);
             model.setCurrent(Service.instance().read(e));
-        } catch (Exception ex) {}
+        } catch (Exception ignored) {}
     }
 
     public void delete() throws Exception {

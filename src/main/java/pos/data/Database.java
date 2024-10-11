@@ -58,7 +58,7 @@ public class Database {
         } catch (SQLIntegrityConstraintViolationException ex) {
             throw new Exception("Registro duplicado o referencia no existe");
         } catch (Exception ex) {
-            throw new Exception("Error de base de datos");
+            throw new Exception(ex.getMessage());
         }
     }
 
