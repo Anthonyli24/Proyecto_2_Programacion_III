@@ -39,6 +39,8 @@ public class Factura {
 
     public void agregar(Linea obj) {lineas.add(obj);}
 
+    public void eliminar(Linea obj){lineas.remove(obj);}
+
     public double totalFactura() {
         double total = 0.0;
         for (Linea linea : lineas) {

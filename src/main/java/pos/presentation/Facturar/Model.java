@@ -15,6 +15,7 @@ public class Model extends AbstractModel {
     private double subtotal;
     private double descuentos;
     private double total;
+    private Factura Fcurrent;
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -37,6 +38,7 @@ public class Model extends AbstractModel {
        this.cajeros = list2;
        this.lineas = list3;
        this.current = new Linea();
+       this.Fcurrent = new Factura();
        this.filter = new Producto();
        this.articulos = 0;
        this.subtotal = 0;
@@ -56,6 +58,9 @@ public class Model extends AbstractModel {
     }
     public Linea getCurrent() {
         return current;
+    }
+    public Factura getFcurrent() {
+        return Fcurrent;
     }
     public int getArticulos() { return articulos; }
     public double getSubtotal() { return subtotal; }
@@ -85,6 +90,10 @@ public class Model extends AbstractModel {
     public void setFilter(Producto filter) {
         this.filter = filter;
         firePropertyChange(FILTER);
+    }
+
+    public void setFcurrent(Factura Fcurrent) {
+        this.Fcurrent = Fcurrent;
     }
 
     public void setArticulos(int articulos) { this.articulos = articulos; }

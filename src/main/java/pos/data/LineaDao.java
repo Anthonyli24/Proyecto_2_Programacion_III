@@ -16,17 +16,19 @@ public class LineaDao {
     public LineaDao() { db = Database.instance(); }
 
     public void create(Linea l) throws Exception {
-        String sql = "insert into " +
-                "Lineas " +
-                "(id, producto, cantidad, descuento) " +
-                "values(?,?,?,?)";
+        String sql = "INSERT IGNORE INTO Lineas " +
+                "(id, producto, categoria, cantidad, descuento) " +
+                "VALUES(?,?,?,?,?)";
         PreparedStatement stm = db.prepareStatement(sql);
         stm.setString(1, l.getNumero());
         stm.setString(2, l.getProducto().getCodigo());
-        stm.setInt(3, l.getCantidad());
-        stm.setDouble(4, l.getDescuento());
+        stm.setString(3, l.getProducto().getCategoria().getId());
+        stm.setInt(4, l.getCantidad());
+        stm.setDouble(5, l.getDescuento());
         db.executeUpdate(stm);
     }
+
+
 
     public Linea read(String num) throws Exception {
         String sql = "select " +
@@ -91,6 +93,25 @@ public class LineaDao {
             l.setProducto(productoDao.from(rs, "p"));
             resultado.add(l);
         }
+        return resultado;
+    }
+
+
+    public List<Linea> getAll() throws Exception {
+        List<Linea> resultado = new ArrayList<Linea>();
+        String sql = "select * " +
+                "from Lineas L " +
+                "inner join Producto p on L.producto = p.codigo";
+        PreparedStatement stm = db.prepareStatement(sql);
+        ResultSet rs = db.executeQuery(stm);
+        ProductoDao productoDao = new ProductoDao();
+
+        while (rs.next()) {
+            Linea l = from(rs, "L");  // Crea el objeto Linea
+            l.setProducto(productoDao.from(rs, "p"));  // Asigna el producto correspondiente
+            resultado.add(l);  // Añade la línea a la lista de resultados
+        }
+
         return resultado;
     }
 

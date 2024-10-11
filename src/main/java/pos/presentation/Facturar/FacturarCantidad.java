@@ -39,6 +39,8 @@ public class FacturarCantidad extends JDialog {
                     }
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(panel, "Ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });

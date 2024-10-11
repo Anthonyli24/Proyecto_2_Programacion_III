@@ -33,11 +33,12 @@ create table Producto (
        Primary Key (codigo)         
      );
 
-create table Lineas(
-    id varchar(10) not null,
-    producto varchar(10)  not null,
-    cantidad int not null,
-    descuento double not null,
+CREATE TABLE Lineas (
+    id VARCHAR(10) NOT NULL,
+    producto VARCHAR(10) NOT NULL,
+    categoria VARCHAR(10) NOT NULL,
+    cantidad INT NOT NULL,
+    descuento DOUBLE NOT NULL,
     PRIMARY KEY (id)
 );
 

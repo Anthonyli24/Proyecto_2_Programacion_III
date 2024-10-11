@@ -23,7 +23,7 @@ public class ProductoDao {
         stm.setString(2, e.getDescripcion());
         stm.setString(3, e.getUnidadMedida());
         stm.setFloat(4, e.getPrecioUnitario());
-        stm.setString(5, e.getCategoria().getId());
+        stm.setString(5, e.getCategoria().getNombre());
         stm.setFloat(6, e.getExistencias());
         db.executeUpdate(stm);
     }
@@ -40,7 +40,7 @@ public class ProductoDao {
         CategoriaDao categoriaDao=new CategoriaDao();
         if (rs.next()) {
             Producto r = from(rs, "t");
-            r.setCategoria(categoriaDao.from(rs, "c"));
+            r.setCategoria(categoriaDao.from(rs, "c."));
            return r;
         } else {
             throw new Exception("Producto no existe");
@@ -90,10 +90,27 @@ public class ProductoDao {
         CategoriaDao categoriaDao=new CategoriaDao();
         while (rs.next()) {
             Producto r = from(rs, "t");
-            r.setCategoria(categoriaDao.from(rs, "c"));
+            r.setCategoria(categoriaDao.from(rs, "c."));
             resultado.add(r);
         }
         return resultado;
+    }
+
+
+    public List<Producto> getAll() throws Exception {
+        List<Producto> productos = new ArrayList<>();
+        String sql = "SELECT * FROM Producto t INNER JOIN Categoria c ON t.categoria = c.id"; // Asegúrate de que la tabla se llama 'Producto'
+
+        PreparedStatement stm = db.prepareStatement(sql);
+        ResultSet rs = db.executeQuery(stm);
+
+        CategoriaDao categoriaDao = new CategoriaDao();
+        while (rs.next()) {
+            Producto producto = from(rs, "t"); // Usar el alias "t" para mapear las columnas de Producto
+            producto.setCategoria(categoriaDao.from(rs, "c.")); // Establecer la categoría del producto
+            productos.add(producto); // Agregar el producto a la lista
+        }
+        return productos;
     }
 
     public Producto from(ResultSet rs, String alias) throws Exception {
@@ -103,6 +120,12 @@ public class ProductoDao {
         e.setUnidadMedida(rs.getString(alias + ".unidadMedida"));
         e.setPrecioUnitario(rs.getFloat(alias + ".precioUnitario"));
         e.setExistencias((int) rs.getFloat(alias + ".existencias"));
+
+        // Recuperar y establecer la categoría del producto
+        CategoriaDao categoriaDao = new CategoriaDao();
+        String categoriaId = rs.getString(alias + ".categoria"); // Asegúrate de que 'categoria' se recupera correctamente
+        e.setCategoria(categoriaDao.read(categoriaId)); // Asumir que tienes un método read en CategoriaDao para recuperar la categoría por ID
+
         return e;
     }
 }

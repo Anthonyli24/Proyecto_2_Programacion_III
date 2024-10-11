@@ -84,6 +84,21 @@ public class ClientesDao {
         return resultado;
     }
 
+    public List<Cliente> getAll() throws Exception {
+        List<Cliente> resultado = new ArrayList<Cliente>();
+        String sql = "select * from Clientes cli";
+        PreparedStatement stm = db.prepareStatement(sql);
+        ResultSet rs = db.executeQuery(stm);
+
+        while (rs.next()) {
+            Cliente cliente = from(rs, "cli");  // Crear objeto Cliente usando el método from()
+            resultado.add(cliente);  // Añadir cliente a la lista
+        }
+
+        return resultado;
+    }
+
+
     public Cliente from(ResultSet rs, String alias) throws Exception {
         Cliente e = new Cliente();
         e.setId(rs.getString(alias + ".id"));

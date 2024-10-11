@@ -78,6 +78,21 @@ public class CajeroDao {
         return resultado;
     }
 
+    public List<Cajero> getAll() throws Exception {
+        List<Cajero> resultado = new ArrayList<>();
+        String sql = "select * from Cajeros C";
+        PreparedStatement stm = db.prepareStatement(sql);
+        ResultSet rs = db.executeQuery(stm);
+
+        while (rs.next()) {
+            Cajero cajero = from(rs, "C");  // Crear objeto Cajero usando el método from()
+            resultado.add(cajero);  // Añadir cajero a la lista
+        }
+
+        return resultado;
+    }
+
+
     public Cajero from(ResultSet rs, String alias) throws Exception {
         Cajero e = new Cajero();
         e.setID(rs.getString(alias + ".id"));
