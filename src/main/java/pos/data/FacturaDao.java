@@ -100,30 +100,6 @@ public class FacturaDao {
         return resultado;
     }
 
-
-    public List<Factura> getAll() throws Exception {
-        List<Factura> resultado = new ArrayList<Factura>();
-        String sql = "select * " +
-                "from Facturas f " +
-                "inner join Clientes c on f.cliente = c.id " +
-                "inner join Cajeros ca on f.cajero = ca.id";
-        PreparedStatement stm = db.prepareStatement(sql);
-        ResultSet rs = db.executeQuery(stm);
-        ClientesDao clientesDao = new ClientesDao();
-        CajeroDao cajeroDao = new CajeroDao();
-
-        while (rs.next()) {
-            Factura f = from(rs, "f");  // Crear objeto Factura usando método from()
-            f.setCliente(clientesDao.from(rs, "c"));  // Asignar cliente correspondiente
-            f.setCajero(cajeroDao.from(rs, "ca"));  // Asignar cajero correspondiente
-            resultado.add(f);  // Añadir la factura a la lista
-        }
-
-        return resultado;
-    }
-
-
-
     public Factura from(ResultSet rs, String alias) throws Exception {
         Factura f = new Factura();
         f.setID(rs.getString(alias + ".id"));

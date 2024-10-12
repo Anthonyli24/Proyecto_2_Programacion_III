@@ -16,7 +16,7 @@ public class FacturarBuscar extends JDialog {
     private Service service;
     private Controller controlller;
 
-    public FacturarBuscar(Controller controller) throws Exception {
+    public FacturarBuscar(Controller controller) {
         setContentPane(panel);
         setModal(true);
         pack();
@@ -33,11 +33,7 @@ public class FacturarBuscar extends JDialog {
         atrasButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    RellenarTabla();
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
+                RellenarTabla();
             }
         });
     }
@@ -47,10 +43,10 @@ public class FacturarBuscar extends JDialog {
     }
 
 
-    public void RellenarTabla() throws Exception {
+    public void RellenarTabla(){
         DefaultTableModel model = new DefaultTableModel(new Object[]{"Código", "Descripción", "Precio", "Existencias"}, 0);
         table1.setModel(model);
-        for (Producto producto : getController().ListaPrincipalProductos()) {
+        for (Producto producto : getController().listaPrincipalProductos()) {
             model.addRow(new Object[]{
                     producto.getCodigo(),
                     producto.getDescripcion(),

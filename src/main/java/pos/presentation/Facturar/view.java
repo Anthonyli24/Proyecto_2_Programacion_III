@@ -7,13 +7,11 @@ import javax.swing.table.TableColumnModel;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class view implements PropertyChangeListener {
-    private JComboBox<Cliente> comboBoxClientes;
-    private JComboBox<Cajero> comboBoxCajeros;
+    private JComboBox<String> comboBoxClientes;
+    private JComboBox<String> comboBoxCajeros;
     private JTextField search;
     private JButton buttonAgregar;
     private JButton buttonCobrar;
@@ -37,56 +35,17 @@ public class view implements PropertyChangeListener {
         return panel;
     }
 
-    public void iniciarComboBoxClientes(List<Cliente> clientes) {
-        comboBoxClientes.removeAllItems(); // Limpiar los elementos existentes
-        for (Cliente cliente : clientes) {
-            comboBoxClientes.addItem(cliente); // Agregar el objeto Cliente
-        }
-        comboBoxClientes.setSelectedIndex(-1); // Establecer ninguna selección
-    }
-
-
-    public void iniciarComboBoxCajeros(List<Cajero> cajeros){
-        comboBoxCajeros.removeAllItems();
-        for (Cajero cajero :cajeros) {
-            comboBoxCajeros.addItem(cajero);
-        }
-        comboBoxCajeros.setSelectedIndex(-1);
-    }
-
     public view() {
         buttonAgregar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                if (comboBoxCajeros.getSelectedIndex() != -1 && comboBoxClientes.getSelectedIndex() != -1) {
                     if (controller != null) {
                         try {
                             Producto filter = new Producto();
                             filter.setCodigo(search.getText());
-                            Producto pro = controller.BuscarProducto(filter);
-                            if(model.getFcurrent().getCliente().getNombre().isEmpty() && model.getFcurrent().getCajero().getNombre().isEmpty()) {
-                                //crear la factura
-                                int numero = Service.instance().getFacturas().size()+1;
-                                LocalDate localDate = LocalDate.now();
-                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-                                String formattedDate = localDate.format(formatter);
-                                String fecha = formattedDate;
-                                String numCodigo = Integer.toString(numero);
-                                String nombreFactura = "FC0"+ numCodigo;
-
-
-                                model.getFcurrent().setCajero((Cajero) comboBoxCajeros.getSelectedItem());
-                                model.getFcurrent().setCliente((Cliente) comboBoxClientes.getSelectedItem());
-                                model.getFcurrent().setFecha(fecha);
-                                model.getFcurrent().setID(nombreFactura);
-
-                            }
-
+                            Producto pro = controller.buscarProducto(filter);
                             if (pro != null) {
-
-                            controller.AgregarLinea(pro,model.getFcurrent());
-
+                                controller.agregarLinea(pro);
                             } else {
                                 JOptionPane.showMessageDialog(panel, "Producto no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
                             }
@@ -94,8 +53,7 @@ public class view implements PropertyChangeListener {
                             JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } else {JOptionPane.showMessageDialog(panel, "Controlador no está inicializado", "Error", JOptionPane.ERROR_MESSAGE);}
-                }else{JOptionPane.showMessageDialog(panel, "Cliente y cajero no seleccionado", "Error", JOptionPane.ERROR_MESSAGE);}
-            }
+               }
         });
 
         buttonCobrar.addActionListener(new ActionListener() {
@@ -113,7 +71,6 @@ public class view implements PropertyChangeListener {
                             String itemCajero = (String) comboBoxCajeros.getSelectedItem();
                             Factura factura = controller.crearFactura(itemCliente,itemCajero);
                             Service.instance().create(factura);
-                            System.out.println("FACTURAS"+Service.instance().getFacturas());
                             controller.cancelar();
                             comboBoxClientes.setSelectedIndex(-1);
                             comboBoxCajeros.setSelectedIndex(-1);
@@ -131,12 +88,7 @@ public class view implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Service service = Service.instance();
-                FacturarBuscar buscar = null;
-                try {
-                    buscar = new FacturarBuscar(controller);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
+                FacturarBuscar buscar = new FacturarBuscar(controller);
                 buscar.setVisible(true);
             }
         });
@@ -163,7 +115,7 @@ public class view implements PropertyChangeListener {
                 if (controller != null) {
                     try {
                         if(!model.getCurrent().getProducto().getCodigo().isEmpty()) {
-                            controller.BorrarLinea(model.getCurrent(),model.getFcurrent());
+                            controller.borrarLinea(model.getCurrent());
                             model.setCurrent(new Linea());
                             JOptionPane.showMessageDialog(panel, "Producto Eliminado", "", JOptionPane.INFORMATION_MESSAGE);
                         }
@@ -220,14 +172,6 @@ public class view implements PropertyChangeListener {
             }
         });
 
-        panel.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                super.componentShown(e);
-                controller.CrearFacturaNueva();
-            }
-        });
-
     }
 
     Model model;
@@ -235,7 +179,7 @@ public class view implements PropertyChangeListener {
 
     private void actualizarEstadoComboBoxClientes() {
         if (model != null) {
-            boolean vacio = model.getFcurrent().getCarrito().isEmpty();
+            boolean vacio = model.getLineas().isEmpty();
             comboBoxClientes.setEnabled(vacio);
         }
     }
@@ -259,10 +203,10 @@ public class view implements PropertyChangeListener {
         double totalFactura = 0;
 
         for (int i = 0; i < rowCount; i++) {
-            int cantidad = ((Number) tableModel.getValueAt(i, pos.presentation.Facturar.TableModel.CANTIDAD)).intValue();
-            double precio = ((Number) tableModel.getValueAt(i, pos.presentation.Facturar.TableModel.PRECIO)).doubleValue();
-            double descuento = ((Number) tableModel.getValueAt(i, pos.presentation.Facturar.TableModel.DESCUENTO)).doubleValue();
-            double neto = ((Number) tableModel.getValueAt(i, pos.presentation.Facturar.TableModel.NETO)).doubleValue();
+            int cantidad = (int) tableModel.getValueAt(i, pos.presentation.Facturar.TableModel.CANTIDAD);
+            double precio = (float) tableModel.getValueAt(i, pos.presentation.Facturar.TableModel.PRECIO);
+            double descuento = (double) tableModel.getValueAt(i, pos.presentation.Facturar.TableModel.DESCUENTO);
+            double neto = (double) tableModel.getValueAt(i, pos.presentation.Facturar.TableModel.NETO);
 
             cantidadArticulos += cantidad;
             subtotalFactura += precio;
@@ -277,10 +221,16 @@ public class view implements PropertyChangeListener {
         total.setText(String.format("%.2f", totalFactura));
     }
 
-
     public Cliente getSelectedCliente() {
-        Cliente selectedCliente = (Cliente) comboBoxClientes.getSelectedItem(); // Obtener el objeto Cliente directamente
-        return selectedCliente; // Retornar el objeto seleccionado (puede ser null si no hay selección)
+        String selectedClienteName = (String) comboBoxClientes.getSelectedItem();
+        if (selectedClienteName != null) {
+            for (Cliente cliente : model.getClientes()) {
+                if (cliente.getNombre().equals(selectedClienteName)) {
+                    return cliente;
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -289,18 +239,18 @@ public class view implements PropertyChangeListener {
             case pos.presentation.Facturar.Model.LISTLINEAS:
                 list.setModel(new DefaultTableModel(new Object[]{"Código", "Articulo", "Categoria", "Cantidad","Precio","Descuento","Neto", "Importe"}, 0));
                 int[] cols = {pos.presentation.Facturar.TableModel.CODIGO, pos.presentation.Facturar.TableModel.ARTICULO, pos.presentation.Facturar.TableModel.CATEGORIA, pos.presentation.Facturar.TableModel.CANTIDAD, pos.presentation.Facturar.TableModel.PRECIO, pos.presentation.Facturar.TableModel.DESCUENTO, pos.presentation.Facturar.TableModel.NETO, pos.presentation.Facturar.TableModel.IMPORTE};
-                list.setModel(new pos.presentation.Facturar.TableModel(cols, model.getFcurrent().getCarrito()));
+                list.setModel(new pos.presentation.Facturar.TableModel(cols, model.getLineas()));
                 list.setRowHeight(30);
                 TableColumnModel columnModel = list.getColumnModel();
                 columnModel.getColumn(6).setPreferredWidth(100);
                 mostrarValoresFactura();
                 actualizarEstadoComboBoxClientes();
                 break;
-            case Model.LISTCLIENTES:
-                iniciarComboBoxClientes(model.getClientes());
-                break;
             case Model.LISTCAJEROS:
-                iniciarComboBoxCajeros(model.getCajeros());
+                comboBoxCajeros.setModel(new DefaultComboBoxModel(model.getCajeros().toArray()));
+                break;
+            case Model.LISTCLIENTES:
+                comboBoxClientes.setModel(new DefaultComboBoxModel(model.getClientes().toArray()));
                 break;
             case Model.FILTER:
                 search.setText(model.getFilter().getCodigo());

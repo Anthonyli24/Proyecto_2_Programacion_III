@@ -2,9 +2,7 @@ package pos.logic;
 
 import pos.data.*;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Service {
     private static Service theInstance;
@@ -54,11 +52,6 @@ public class Service {
         }
     }
 
-
-    public List<Cliente> getClientes() throws Exception {
-        return clienteDao.getAll();
-    }
-
     //================= CAJEROS ============
     public void create(Cajero e) throws Exception { cajeroDao.create(e); }
 
@@ -76,10 +69,6 @@ public class Service {
         }
     }
 
-    public List<Cajero> getCajeros() throws Exception {
-        return cajeroDao.getAll();
-    }
-
     //================= PRODUCTOS ============
     public void create(Producto e) throws Exception { productoDao.create(e); }
 
@@ -95,17 +84,6 @@ public class Service {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    public List<Producto> getProductos() throws Exception {
-        return productoDao.getAll();
-    }
-
-    public List<Producto> searchDescripcion(Producto e) throws Exception {
-        return productoDao.getAll().stream()
-                .filter(i->(i.getDescripcion().contains(e.getDescripcion())))
-                .sorted(Comparator.comparing(Producto::getDescripcion))
-                .collect(Collectors.toList());
     }
 
     //================= CATEGORIAS ============
@@ -134,18 +112,6 @@ public class Service {
         }
     }
 
-    public List<Linea> getLineas() throws Exception {
-        return lineaDao.getAll();
-    }
-
-    public double PagoTotal(List<Linea> lineas) {
-        double total = 0;
-        for (Linea linea : lineas) {
-            total += linea.sacarImporte();
-        }
-        return total;
-    }
-
     //========== FACTURAS ==========
     public void create(Factura e) throws Exception { facturaDao.create(e); }
 
@@ -163,9 +129,6 @@ public class Service {
         }
     }
 
-    public List<Factura> getFacturas() throws Exception {
-        return facturaDao.getAll();
-    }
 
 
 

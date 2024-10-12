@@ -41,8 +41,6 @@ public class FacturarDescuento extends JDialog {
                     }
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Por favor ingrese un valor numérico válido.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
                 }
             }
         });

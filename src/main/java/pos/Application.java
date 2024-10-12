@@ -9,7 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class Application {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.windows.WindowLookAndFeel");
         }
