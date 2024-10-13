@@ -13,7 +13,6 @@ public class Model extends AbstractModel {
     List<Producto> list;
     Producto current;
     int mode;
-
     List<Categoria> categorias;
 
     @Override

@@ -46,10 +46,16 @@ public class Application {
         productosController = new pos.presentation.Productos.Controller(productosView,productosModel);
         Icon productosIcon= new ImageIcon(Application.class.getResource("/pos/presentation/icons/producto.png"));
 
+        pos.presentation.Historico.Model historicoModel= new pos.presentation.Historico.Model();
+        pos.presentation.Historico.view viewHistorico = new pos.presentation.Historico.view();
+        historicoController = new pos.presentation.Historico.Controller(viewHistorico,historicoModel);
+        Icon historicoIcon = new ImageIcon(Application.class.getResource("/pos/presentation/icons/Historico.png"));
+
         tabbedPane.addTab("Facturar  ",facturarIcon, facturarView.getPanel());
         tabbedPane.addTab("Clientes  ",clientesIcon, clientesView.getPanel());
         tabbedPane.addTab("Cajeros  ",cajeroIcon, cajeroView.getPanel());
         tabbedPane.addTab("Productos  ",productosIcon,productosView.getPanel());
+        tabbedPane.addTab("Histórico ",historicoIcon, viewHistorico.getPanel());
 
         window.setSize(900,550);
         window.setResizable(false);
@@ -63,6 +69,7 @@ public class Application {
     public static pos.presentation.Clientes.Controller clientesController;
     public static pos.presentation.Cajero.Controller cajeroController;
     public static pos.presentation.Productos.Controller productosController;
+    public static pos.presentation.Historico.Controller historicoController;
 
     public static JFrame window;
 

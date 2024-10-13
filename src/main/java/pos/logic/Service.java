@@ -104,10 +104,14 @@ public class Service {
 
     public List<Factura> search(Factura e) throws Exception { return facturaDao.search(e); }
 
+    public List<Factura> searchCliente(Factura id) throws Exception { return facturaDao.searchByCliente(id.getNombreCli()); }
+
     //================= LINEAS  ============
     public void create(Linea e) throws Exception { lineaDao.create(e); }
 
     public List<Linea> search(Linea e) throws Exception { return lineaDao.buscarLineasPorNumero(e.getNumeroFactura()); }
+
+    public List<Linea> searchHistorico(String codigo) throws Exception { return lineaDao.buscarLineasPorNumero(codigo);}
 
     public Linea read(Linea e) throws Exception { return lineaDao.read(e.getNumero()); }
 

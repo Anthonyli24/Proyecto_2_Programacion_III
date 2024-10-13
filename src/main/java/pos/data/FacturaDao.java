@@ -38,7 +38,7 @@ public class FacturaDao {
         if (rs.next()) {
             return from(rs);
         } else {
-            throw new Exception("Factura no existe");
+            throw new Exception("Factura con codigo " + id.toString() + " no encontrada");
         }
     }
 
@@ -73,16 +73,30 @@ public class FacturaDao {
 
     public List<Factura> search(Factura e) throws Exception {
         List<Factura> resultado = new ArrayList<>();
-        String sql = "select " +
-                " * " +
-                "from Factura " +
-                "where fecha like ? or codigoFactura like ? or nombreCli like ? or nombreCaje like ?";
+        String sql = "SELECT * " +
+                "FROM Factura " +
+                "WHERE codigoFactura LIKE ? " +
+                "ORDER BY CAST(SUBSTRING(codigoFactura, 3) AS UNSIGNED) ASC"; // Para MySQL
         PreparedStatement stm = db.prepareStatement(sql);
-        stm.setString(1, "%" + e.getFecha() + "%");
-        stm.setString(2, "%" + e.getCodigoFactura() + "%");
-        stm.setString(3, "%" + e.getNombreCli() + "%");
-        stm.setString(4, "%" + e.getNombreCaje() + "%");
+        stm.setString(1, "%" + e.getCodigoFactura() + "%");
         ResultSet rs = db.executeQuery(stm);
+        while (rs.next()) {
+            resultado.add(from(rs));
+        }
+        return resultado;
+    }
+
+    public List<Factura> searchByCliente(String nombreCliente) throws Exception {
+        List<Factura> resultado = new ArrayList<>();
+        String sql = "select " +
+                "* " +
+                "from Factura " +
+                "where nombreCli like ?";
+
+        PreparedStatement stm = db.prepareStatement(sql);
+        stm.setString(1, "%" + nombreCliente + "%");
+
+        ResultSet rs = stm.executeQuery();
         while (rs.next()) {
             resultado.add(from(rs));
         }
