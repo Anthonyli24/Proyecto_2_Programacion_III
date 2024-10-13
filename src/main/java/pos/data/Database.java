@@ -1,7 +1,7 @@
 package pos.data;
 
-import java.sql.*;
 import java.util.Properties;
+import java.sql.*;
 
 public class Database {
     private static Database theInstance;
@@ -37,7 +37,7 @@ public class Database {
             Class.forName(driver).newInstance();
             cnx = DriverManager.getConnection(URL_conexion);
         } catch (Exception e) {
-            System.err.println("FALLÓ CONEXION A BASE DE DATOS");
+            System.err.println("Falló conexion a base de datos");
             System.err.println(e.getMessage());
             System.exit(-1);
         }
@@ -47,7 +47,7 @@ public class Database {
         try {
             return cnx.prepareStatement(statement,Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException e) {
-            throw new Exception("ERROR DE BASE DE DATOS");
+            throw new Exception("Error de base de datos");
         }
     }
 
@@ -56,9 +56,9 @@ public class Database {
             statement.executeUpdate();
             return statement.getUpdateCount();
         } catch (SQLIntegrityConstraintViolationException ex) {
-            throw new Exception("REGISTRO DUPLICADO o REFERENCIA NO EXISTE");
+            throw new Exception("Registro duplicado o referencia no existe");
         } catch (Exception ex) {
-            throw new Exception("ERROR DE BASE DE DATOS");
+            throw new Exception("Error de base de datos");
         }
     }
 
@@ -66,7 +66,7 @@ public class Database {
         try {
             return statement.executeQuery();
         } catch (SQLException e) {
-            throw new Exception("ERROR DE BASE DE DATOS");
+            throw new Exception("Error de base de datos");
         }
     }
 }

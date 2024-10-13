@@ -1,14 +1,11 @@
 package pos.presentation.Facturar;
 
-import pos.logic.*;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
-import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.List;
+import java.awt.event.*;
+import javax.swing.*;
+import pos.logic.*;
 
 public class view implements PropertyChangeListener {
     private JComboBox<String> comboBoxClientes;
@@ -37,25 +34,62 @@ public class view implements PropertyChangeListener {
     }
 
     public view() {
+
+        panel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                super.componentShown(e);
+                actualizarComboBoxes();
+                comboBoxCajeros.revalidate();
+                comboBoxClientes.revalidate();
+                comboBoxCajeros.repaint();
+                comboBoxClientes.repaint();
+            }
+        });
+
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (controller != null) {
+                    int row = list.getSelectedRow();
+                    controller.edit(row);
+                }
+            }
+        });
+
+        comboBoxClientes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Cliente cli = (Cliente) comboBoxClientes.getSelectedItem();
+                double discount = 0;
+                discount = cli.getDescuento();
+                for (Linea linea : model.getLineas()) {
+                    linea.setDescuento((discount / 100) * linea.getProducto().getPrecioUnitario());
+                }
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
+
+
         buttonAgregar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (controller != null) {
-                    try {
-                        Producto filter = new Producto();
-                        filter.setCodigo(search.getText());
-                        Producto pro = controller.BuscarProducto(filter);
-                        if (pro != null) {
-                            controller.AgregarLinea(pro);
-                        } else {
-                            JOptionPane.showMessageDialog(panel, "Producto no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(panel, "Controlador no está inicializado", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                if (comboBoxCajeros.getSelectedIndex() != -1 && comboBoxClientes.getSelectedIndex() != -1) {
+                    if (controller != null) {
+                        try {
+                            Producto filter = new Producto();
+                            filter.setCodigo(search.getText());
+                            Producto pro = controller.BuscarProducto(filter);
+                            Cliente selectedCliente = (Cliente) comboBoxClientes.getSelectedItem();
+                            if (pro != null) {
+                                controller.AgregarLinea(pro, selectedCliente);
+                            } else {
+                                JOptionPane.showMessageDialog(panel, "Producto no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } catch (Exception ex) { JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE); }
+                    } else { JOptionPane.showMessageDialog(panel, "Controlador no está inicializado", "Error", JOptionPane.ERROR_MESSAGE); }
+                } else { JOptionPane.showMessageDialog(panel, "Cliente y cajero no seleccionado", "Error", JOptionPane.ERROR_MESSAGE); }
             }
         });
 
@@ -77,8 +111,6 @@ public class view implements PropertyChangeListener {
                             controller.crearFactura(nombreCliente,nombreCajero);
                             model.setLineas(new ArrayList<>());
                             model.setFilter(new Producto());
-                            comboBoxClientes.setSelectedIndex(-1);
-                            comboBoxCajeros.setSelectedIndex(-1);
                             model.setCurrent(new Linea());
                             JOptionPane.showMessageDialog(panel, "Pago realizado con éxito. La factura ha sido guardada y las líneas limpiadas.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         } catch (Exception ex) {
@@ -121,7 +153,7 @@ public class view implements PropertyChangeListener {
                     try {
                         if(!model.getCurrent().getProducto().getCodigo().isEmpty()) {
                             controller.BorrarLinea(model.getCurrent());
-                            controller.iniciarLineas(model.getCurrent());
+                            controller.iniciarLineas();
                             model.setCurrent(new Linea());
                             JOptionPane.showMessageDialog(panel, "Producto Eliminado", "", JOptionPane.INFORMATION_MESSAGE);
                         }
@@ -148,16 +180,6 @@ public class view implements PropertyChangeListener {
                     model.setCurrent(new Linea());
                 }
                 else {JOptionPane.showMessageDialog(panel, "Producto no seleccionado", "Error", JOptionPane.ERROR_MESSAGE);}
-            }
-        });
-
-        list.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (controller != null) {
-                    int row = list.getSelectedRow();
-                    controller.edit(row);
-                }
             }
         });
 
@@ -189,6 +211,11 @@ public class view implements PropertyChangeListener {
 
     public void setController(Controller controller) {
         this.controller = controller;
+    }
+
+    private void actualizarComboBoxes() {
+        comboBoxClientes.setModel(new DefaultComboBoxModel(model.getClientes().toArray()));
+        comboBoxCajeros.setModel(new DefaultComboBoxModel(model.getCajeros().toArray()));
     }
 
     private void mostrarValoresFactura() {
@@ -228,10 +255,8 @@ public class view implements PropertyChangeListener {
                 mostrarValoresFactura();
                 break;
             case Model.LISTCLIENTES:
-                comboBoxCajeros.setModel(new DefaultComboBoxModel(model.getCajeros().toArray()));
-                break;
             case Model.LISTCAJEROS:
-                comboBoxClientes.setModel(new DefaultComboBoxModel(model.getClientes().toArray()));
+                actualizarComboBoxes();
                 break;
             case Model.FILTER:
                 search.setText(model.getFilter().getCodigo());

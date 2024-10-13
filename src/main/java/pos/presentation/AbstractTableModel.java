@@ -16,11 +16,9 @@ public abstract class AbstractTableModel<E> extends javax.swing.table.AbstractTa
     public int getColumnCount() {
         return cols.length;
     }
-
     public String getColumnName(int col){
         return colNames[cols[col]];
     }
-
     public Class<?> getColumnClass(int col){
         switch (cols[col]){
             default: return super.getColumnClass(col);
@@ -30,14 +28,12 @@ public abstract class AbstractTableModel<E> extends javax.swing.table.AbstractTa
     public int getRowCount() {
         return rows.size();
     }
-
     public Object getValueAt(int row, int col) {
         E e = rows.get(row);
         return getPropetyAt(e, col);
     }
 
     protected abstract Object getPropetyAt(E e, int col);
-
     public E getRowAt(int row) {
         return rows.get(row);
     }

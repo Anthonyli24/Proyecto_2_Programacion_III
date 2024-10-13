@@ -1,8 +1,7 @@
 package pos.logic;
 
-import pos.data.*;
-
 import java.util.List;
+import pos.data.*;
 
 public class Service {
     private static Service theInstance;
@@ -32,8 +31,7 @@ public class Service {
         }
     }
 
-    public void stop(){
-    }
+    public void stop(){ }
 
     //================= CLIENTES ============
     public void create(Cliente e) throws Exception { clienteDao.create(e); }

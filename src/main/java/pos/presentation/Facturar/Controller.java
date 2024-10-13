@@ -1,10 +1,10 @@
 package pos.presentation.Facturar;
 
-import pos.logic.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
+import java.util.List;
+import pos.logic.*;
 
 public class Controller {
     private view view;
@@ -16,9 +16,15 @@ public class Controller {
         this.model = model;
         view.setController(this);
         view.setModel(model);
+        iniciarLineas();
     }
 
-    public void AgregarLinea(Producto filter) throws Exception {
+    public void AgregarLinea(Producto filter, Cliente cli) throws Exception {
+        for (Linea linea : model.getLineas()) {
+            if (linea.getProducto().getCodigo().equals(filter.getCodigo())) {
+                throw new Exception("No se puede ingresar el mismo producto dos veces.");
+            }
+        }
         Linea nuevo = new Linea();
         String numCodigo = Integer.toString(Service.instance().search(new Factura()).size() + 1);
         String numeroFactura = "FC0" + numCodigo;
@@ -28,6 +34,9 @@ public class Controller {
         Service.instance().update(filter);
         nuevo.setProducto(filter);
         nuevo.setNumeroFactura(numeroFactura);
+        double discount = 0;
+        if (cli != null) {discount = cli.getDescuento();}
+        nuevo.setDescuento((discount / 100) * nuevo.getProducto().getPrecioUnitario());
         Service.instance().create(nuevo);
         model.addLinea(nuevo);
     }
@@ -70,8 +79,12 @@ public class Controller {
         model.setFilter(new Producto());
     }
 
-    public void iniciarLineas(Linea e) throws Exception {
-        List<Linea> lineas = Service.instance().search(e);
+    public void iniciarLineas() throws Exception {
+        Linea nuevo = new Linea();
+        String numCodigo = Integer.toString(Service.instance().search(new Factura()).size() + 1);
+        String numeroFactura = "FC0" + numCodigo;
+        nuevo.setNumeroFactura(numeroFactura);
+        List<Linea> lineas = Service.instance().search(nuevo);
         model.setLineas(lineas);
     }
 
@@ -80,7 +93,7 @@ public class Controller {
         String fecha = LocalDate.now().format(formatter);
         String numCodigo = Integer.toString(Service.instance().search(new Factura()).size() + 1);
         String numeroFactura = "FC0" + numCodigo;
-        Factura factura = new Factura(numeroFactura, fecha, nombreCli, nombreCaje);
+        Factura factura = new Factura(numeroFactura, fecha, nombreCli, nombreCaje, PagoTotal());
         Service.instance().create(factura);
     }
 

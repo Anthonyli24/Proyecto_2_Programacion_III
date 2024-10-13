@@ -1,7 +1,7 @@
 package pos.presentation.Facturar;
 
-import pos.logic.Linea;
 import pos.presentation.AbstractTableModel;
+import pos.logic.Linea;
 import java.util.List;
 
 public class TableModel extends AbstractTableModel<Linea> implements javax.swing.table.TableModel {

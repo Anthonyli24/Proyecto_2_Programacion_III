@@ -8,6 +8,8 @@ import java.beans.PropertyChangeEvent;
 import pos.logic.Categoria;
 import pos.logic.Producto;
 import pos.Application;
+import pos.logic.Service;
+
 import javax.swing.*;
 
 public class View implements PropertyChangeListener {
@@ -56,7 +58,7 @@ public class View implements PropertyChangeListener {
                         controller.save(n);
                         JOptionPane.showMessageDialog(panel, "Registro Aplicado", "", JOptionPane.INFORMATION_MESSAGE);
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(panel, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(panel, "Producto ya existe" , "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -69,7 +71,7 @@ public class View implements PropertyChangeListener {
                     controller.delete();
                     JOptionPane.showMessageDialog(panel, "Registro Borrado", "", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(panel, "No se pudo eliminar el producto", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -99,19 +101,16 @@ public class View implements PropertyChangeListener {
                 }
             }
         });
-
         panel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
                 super.componentShown(e);
-                model.getList();
+                model.setList(Service.instance().search(model.getFilter()));
             }
         });
     }
 
-    public JPanel getPanel() {
-        return panel;
-    }
+    public JPanel getPanel() { return panel; }
 
     Controller controller;
     Model model;
@@ -137,7 +136,6 @@ public class View implements PropertyChangeListener {
                 columnModel.getColumn(1).setPreferredWidth(120);
                 columnModel.getColumn(4).setPreferredWidth(120);
                 columnModel.getColumn(6).setPreferredWidth(50);
-
                 break;
             case Model.CURRENT:
                 codigo.setText(model.getCurrent().getCodigo());

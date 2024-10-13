@@ -1,16 +1,15 @@
 package pos.presentation.Clientes;
 
-import pos.Application;
-import pos.logic.Cliente;
-
-import javax.swing.*;
 import javax.swing.table.TableColumnModel;
-import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import pos.logic.Cliente;
+import pos.Application;
+import javax.swing.*;
 
 public class View implements PropertyChangeListener {
     private JPanel panel;
@@ -60,7 +59,7 @@ public class View implements PropertyChangeListener {
                         controller.save(n);
                         JOptionPane.showMessageDialog(panel, "Registro Aplicado", "", JOptionPane.INFORMATION_MESSAGE);
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(panel, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(panel, "Cliente ya existe" , "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -81,7 +80,7 @@ public class View implements PropertyChangeListener {
                     controller.delete();
                     JOptionPane.showMessageDialog(panel, "Registro Borrado", "", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(panel, "No se pudo eliminar el cliente" , "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

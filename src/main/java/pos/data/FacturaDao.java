@@ -1,10 +1,10 @@
 package pos.data;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.List;
+import java.sql.ResultSet;
 import pos.logic.Factura;
+import java.util.List;
 
 public class FacturaDao {
     Database db;
@@ -14,17 +14,24 @@ public class FacturaDao {
     }
 
     public void create(Factura e) throws Exception {
-        String sql = "INSERT INTO Factura (codigoFactura, fecha, nombreCli, nombreCaje) VALUES (?, ?, ?, ?)";
+        String sql = "insert into " +
+                "Factura " +
+                "(codigoFactura, fecha, nombreCli, nombreCaje, importeTotal) " +
+                "values (?, ?, ?, ? , ?)";
         PreparedStatement stm = db.prepareStatement(sql);
         stm.setString(1, e.getCodigoFactura());
         stm.setString(2, e.getFecha());
         stm.setString(3, e.getNombreCli());
         stm.setString(4, e.getNombreCaje());
+        stm.setDouble(5, e.getImporteTotal());
         db.executeUpdate(stm);
     }
 
     public Factura read(String id) throws Exception {
-        String sql = "SELECT * FROM Factura WHERE codigoFactura = ?";
+        String sql = "select " +
+                " * " +
+                "from Factura " +
+                "where codigoFactura = ?";
         PreparedStatement stm = db.prepareStatement(sql);
         stm.setString(1, id);
         ResultSet rs = db.executeQuery(stm);
@@ -36,12 +43,16 @@ public class FacturaDao {
     }
 
     public void update(Factura e) throws Exception {
-        String sql = "UPDATE Factura SET fecha = ?, nombreCli = ?, nombreCaje = ? WHERE codigoFactura = ?";
+        String sql = "Update " +
+                "Factura " +
+                "set fecha = ?, nombreCli = ?, nombreCaje = ? ,importeTotal = ? " +
+                "where codigoFactura = ?";
         PreparedStatement stm = db.prepareStatement(sql);
         stm.setString(1, e.getFecha());
         stm.setString(2, e.getNombreCli());
         stm.setString(3, e.getNombreCaje());
-        stm.setString(4, e.getCodigoFactura());
+        stm.setDouble(4, e.getImporteTotal());
+        stm.setString(5, e.getCodigoFactura());
         int count = db.executeUpdate(stm);
         if (count == 0) {
             throw new Exception("Factura no existe");
@@ -49,7 +60,9 @@ public class FacturaDao {
     }
 
     public void delete(Factura e) throws Exception {
-        String sql = "DELETE FROM Factura WHERE codigoFactura = ?";
+        String sql = "delete " +
+                "from Factura " +
+                "where codigoFactura = ?";
         PreparedStatement stm = db.prepareStatement(sql);
         stm.setString(1, e.getCodigoFactura());
         int count = db.executeUpdate(stm);
@@ -60,13 +73,15 @@ public class FacturaDao {
 
     public List<Factura> search(Factura e) throws Exception {
         List<Factura> resultado = new ArrayList<>();
-        String sql = "SELECT * FROM Factura WHERE fecha LIKE ? OR codigoFactura LIKE ? OR nombreCli LIKE ? OR nombreCaje LIKE ?";
+        String sql = "select " +
+                " * " +
+                "from Factura " +
+                "where fecha like ? or codigoFactura like ? or nombreCli like ? or nombreCaje like ?";
         PreparedStatement stm = db.prepareStatement(sql);
         stm.setString(1, "%" + e.getFecha() + "%");
         stm.setString(2, "%" + e.getCodigoFactura() + "%");
         stm.setString(3, "%" + e.getNombreCli() + "%");
         stm.setString(4, "%" + e.getNombreCaje() + "%");
-
         ResultSet rs = db.executeQuery(stm);
         while (rs.next()) {
             resultado.add(from(rs));
@@ -80,6 +95,7 @@ public class FacturaDao {
         e.setFecha(rs.getString("fecha"));
         e.setNombreCli(rs.getString("nombreCli"));
         e.setNombreCaje(rs.getString("nombreCaje"));
+        e.setImporteTotal(rs.getDouble("importeTotal"));
         return e;
     }
 }

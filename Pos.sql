@@ -38,6 +38,7 @@ create table Factura (
     Fecha varchar(255),
     nombreCli varchar(255),
     nombreCaje varchar(255),
+    importeTotal double,
     Primary Key(codigoFactura)
 );
 

@@ -1,14 +1,10 @@
 package pos.presentation.Facturar;
 
-import pos.logic.Cliente;
-import pos.logic.Cajero;
-import pos.logic.Linea;
-import pos.logic.Producto;
-import pos.presentation.AbstractModel;
-
 import java.beans.PropertyChangeListener;
+import pos.presentation.AbstractModel;
 import java.util.ArrayList;
 import java.util.List;
+import pos.logic.*;
 
 public class Model extends AbstractModel {
     private Producto filter;
@@ -50,55 +46,23 @@ public class Model extends AbstractModel {
         this.total = 0;
     }
 
-    public List<Cliente> getClientes() {
-        return clientes;
-    }
-
+    public List<Cliente> getClientes() { return Service.instance().search(new Cliente()); }
     public List<Cajero> getCajeros() {
-        return cajeros;
+        return Service.instance().search(new Cajero());
     }
-
     public List<Linea> getLineas() {
         return lineas;
     }
-
     public Producto getFilter() {
         return filter;
     }
-
     public Linea getCurrent() {
         return current;
-    }
-
-    public int getArticulos() {
-        return articulos;
-    }
-
-    public double getSubtotal() {
-        return subtotal;
-    }
-
-    public double getDescuentos() {
-        return descuentos;
-    }
-
-    public double getTotal() {
-        return total;
     }
 
     public void setCurrent(Linea current) {
         this.current = current;
         firePropertyChange(CURRENT);
-    }
-
-    public void setClientes(List<Cliente> clientes) {
-        this.clientes = clientes;
-        firePropertyChange(LISTCLIENTES);
-    }
-
-    public void setCajeros(List<Cajero> cajeros) {
-        this.cajeros = cajeros;
-        firePropertyChange(LISTCAJEROS);
     }
 
     public void setLineas(List<Linea> lineas) {
@@ -124,7 +88,7 @@ public class Model extends AbstractModel {
             recalculateTotals();
         }
         else{
-            System.out.println("No se puede eliminar el linea");
+            System.out.println("No se puede eliminar la linea");
         }
     }
 

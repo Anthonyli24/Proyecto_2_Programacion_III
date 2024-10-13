@@ -1,11 +1,11 @@
 package pos.presentation.Facturar;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.*;
-import java.util.List;
 import pos.logic.Producto;
 import pos.logic.Service;
+import java.awt.event.*;
+import java.util.List;
+import javax.swing.*;
 
 public class FacturarBuscar extends JDialog {
     private JTextField textField1;
@@ -23,13 +23,13 @@ public class FacturarBuscar extends JDialog {
         this.controlller = controller;
         RellenarTabla();
 
-
         buscarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 buscarProductos();
             }
         });
+
         atrasButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -41,7 +41,6 @@ public class FacturarBuscar extends JDialog {
     public Controller getController(){
         return controlller;
     }
-
 
     public void RellenarTabla(){
         DefaultTableModel model = new DefaultTableModel(new Object[]{"Código", "Descripción", "Precio", "Existencias"}, 0);
@@ -56,8 +55,6 @@ public class FacturarBuscar extends JDialog {
         }
     }
 
-
-
     private void buscarProductos() {
         String descripcion = textField1.getText();
         Producto filtro = new Producto();
@@ -67,12 +64,9 @@ public class FacturarBuscar extends JDialog {
             JOptionPane.showMessageDialog(null, "La descripción no puede estar vacía.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
         try {
             List<Producto> productos = getController().buscarDescripcion(filtro);
-
             if (productos.isEmpty()) { throw new Exception("No se encontraron productos con la descripción: " + descripcion); }
-
             DefaultTableModel model = (DefaultTableModel) table1.getModel();
             model.setRowCount(0);
             for (Producto producto : productos) {

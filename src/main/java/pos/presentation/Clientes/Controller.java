@@ -19,7 +19,6 @@ import pos.logic.Cliente;
 import pos.logic.Service;
 import pos.Application;
 
-
 public class Controller {
     private View view;
     private Model model;
@@ -58,7 +57,7 @@ public class Controller {
             model.setMode(Application.MODE_EDIT);
             model.setCurrent(Service.instance().read(e));
         } catch (Exception ex) {
-            ex.printStackTrace(); // Manejo de errores mejorado
+            ex.printStackTrace();
         }
     }
 

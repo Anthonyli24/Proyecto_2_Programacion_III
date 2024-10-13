@@ -30,7 +30,7 @@ public class ProductoDao {
 
     public Producto read(String codigo) throws Exception {
         String sql = "select " +
-                "* " +
+                " * " +
                 "from  Producto t " +
                 "inner join Categoria c on t.categoria=c.id " +
                 "where t.codigo=?";

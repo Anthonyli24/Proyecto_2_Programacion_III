@@ -1,12 +1,11 @@
 package pos;
 
-import pos.logic.Service;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.border.Border;
+import pos.logic.Service;
+import javax.swing.*;
+import java.awt.*;
 
 public class Application {
     public static void main(String[] args) throws Exception {

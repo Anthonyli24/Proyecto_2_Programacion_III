@@ -39,7 +39,7 @@ public class FacturarCantidad extends JDialog {
                             pro.setExistencias(cantEX -cantidad);
                             Service.instance().update(pro);
                             Service.instance().update(currentLinea);
-                            controller.iniciarLineas(currentLinea);
+                            controller.iniciarLineas();
                             JOptionPane.showMessageDialog(null, "Cantidad aplicada.", "Cantidad Aplicada", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
                         }else{

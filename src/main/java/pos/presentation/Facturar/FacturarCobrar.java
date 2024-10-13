@@ -45,16 +45,16 @@ public class FacturarCobrar extends JDialog {
 
                     double totalPagado = efectivo + tarjeta + cheque + simpe;
 
+                    double vuelto = totalPagado - importeValue;
+
                     if (totalPagado >= importeValue) {
-                        JOptionPane.showMessageDialog(null, "El pago se ha efectuado correctamente.", "Pago Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "El pago se ha efectuado correctamente. Su vuelto es: " + vuelto , "Pago Exitoso", JOptionPane.INFORMATION_MESSAGE);
                         pagoExitoso = true;
                     } else {
                         JOptionPane.showMessageDialog(null, "La suma de los medios de pago no es suficiente para cubrir el importe.", "Error de Pago", JOptionPane.WARNING_MESSAGE);
                     }
 
-                    if (pagoExitoso) {
-                        dispose();
-                    }
+                    if (pagoExitoso) { dispose(); }
 
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Por favor ingrese valores numéricos válidos.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);

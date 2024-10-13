@@ -54,7 +54,7 @@ public class View implements PropertyChangeListener {
                         controller.save(n);
                         JOptionPane.showMessageDialog(panel, "Registro Aplicado", "", JOptionPane.INFORMATION_MESSAGE);
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(panel, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(panel, "Cajero ya existe", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -85,7 +85,7 @@ public class View implements PropertyChangeListener {
                     controller.delete();
                     JOptionPane.showMessageDialog(panel, "Registro Borrado", "", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(panel, "No se pudo eliminar el cajero" , "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

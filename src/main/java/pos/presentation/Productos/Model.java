@@ -43,6 +43,7 @@ public class Model extends AbstractModel {
     public Producto getCurrent() { return current; }
     public Producto getFilter() { return filter; }
     public int getMode() { return mode; }
+    public List<Categoria> getCategorias() { return categorias; }
 
     public void setCurrent(Producto current) {
         this.current = current;
@@ -50,10 +51,7 @@ public class Model extends AbstractModel {
     }
 
     public void setFilter(Producto filter) { this.filter = filter; }
-
     public void setMode(int mode) { this.mode = mode; }
-
-    public List<Categoria> getCategorias() { return categorias; }
 
     public void setCategorias(List<Categoria> categorias) {
         this.categorias = categorias;

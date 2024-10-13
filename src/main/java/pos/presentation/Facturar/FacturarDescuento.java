@@ -40,7 +40,7 @@ public class FacturarDescuento extends JDialog {
                         Linea currentLinea = model.getCurrent();
                         currentLinea.setDescuento((descuento / 100) * currentLinea.getProducto().getPrecioUnitario());
                         Service.instance().update(currentLinea);
-                        controller.iniciarLineas(currentLinea);
+                        controller.iniciarLineas();
                         JOptionPane.showMessageDialog(null, "Descuento aplicado correctamente.", "Descuento Aplicado", JOptionPane.INFORMATION_MESSAGE);
                         dispose();
                     }
@@ -54,10 +54,7 @@ public class FacturarDescuento extends JDialog {
 
         cancelarButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Descuento cancelado.", "Descuento Cancelado", JOptionPane.INFORMATION_MESSAGE);
-                dispose();
-            }
+            public void actionPerformed(ActionEvent e) { dispose(); }
         });
     }
     public void setModel(Model model) {this.model = model;}
