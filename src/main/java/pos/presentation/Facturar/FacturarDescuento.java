@@ -34,8 +34,8 @@ public class FacturarDescuento extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 try {
                     double descuento = Double.parseDouble(textField1.getText());
-                    if (descuento < 0) {
-                        JOptionPane.showMessageDialog(null, "El descuento no puede ser negativo.", "Error de Descuento", JOptionPane.ERROR_MESSAGE);
+                    if (descuento < 0 || descuento > 100) {
+                        JOptionPane.showMessageDialog(null, "El descuento debe estar entre 0-100%.", "Error de Descuento", JOptionPane.ERROR_MESSAGE);
                     } else {
                         Linea currentLinea = model.getCurrent();
                         currentLinea.setDescuento((descuento / 100) * currentLinea.getProducto().getPrecioUnitario());

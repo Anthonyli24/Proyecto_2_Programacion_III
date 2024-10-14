@@ -94,6 +94,7 @@ public class View implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 controller.clear();
+                searchNombre.setText(" ");
             }
         });
     }
