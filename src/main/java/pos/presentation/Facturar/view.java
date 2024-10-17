@@ -66,7 +66,7 @@ public class view implements PropertyChangeListener {
                 for (Linea linea : model.getLineas()) {
                     linea.setDescuento((discount / 100) * linea.getProducto().getPrecioUnitario());
                 }
-                mostrarValoresFactura();                
+                mostrarValoresFactura();
                 panel.revalidate();
                 panel.repaint();
             }

@@ -126,5 +126,7 @@ public class Service {
         return lastNumero + 1;
     }
 
+    public double Estadistica(String fechaIni, String FechaFin, String Categoria) throws Exception {return lineaDao.obtenerTotalImportePorCategoriaYFechas(fechaIni, FechaFin, Categoria);}
+
     public double PagoTotal(Linea e) throws Exception { return lineaDao.calcularTotalFactura(e.getNumeroFactura()); }
 }

@@ -144,9 +144,13 @@ public class View implements PropertyChangeListener {
         }
 
         try {
-            Double.parseDouble(descuento.getText());
-            descuentoLbl.setBorder(null);
-            descuentoLbl.setToolTipText(null);
+            if(100 >= Double.parseDouble(descuento.getText())) {
+                descuentoLbl.setBorder(null);
+                descuentoLbl.setToolTipText(null);
+            }
+            valid = false;
+            descuentoLbl.setBorder(Application.BORDER_ERROR);
+            JOptionPane.showMessageDialog(panel, "Descuento invalido", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             valid = false;
             descuentoLbl.setBorder(Application.BORDER_ERROR);

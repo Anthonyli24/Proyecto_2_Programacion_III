@@ -3,6 +3,8 @@ package pos.data;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.sql.ResultSet;
+
+import pos.logic.Factura;
 import pos.logic.Linea;
 import java.util.List;
 
@@ -140,6 +142,31 @@ public class LineaDao {
             }
         }
         return total;
+    }
+
+    public double obtenerTotalImportePorCategoriaYFechas(String fechaInicio, String fechaFin, String categoriaId) throws Exception {
+        double totalImporte = 0.0;
+
+        String sql = "SELECT SUM(l.importe) AS total_importe " +
+                "FROM Linea l " +
+                "INNER JOIN Producto p ON l.Producto_codigo = p.codigo " +
+                "INNER JOIN Factura f ON l.numeroFactura = f.codigoFactura " +
+                "WHERE f.fecha BETWEEN ? AND ? " +
+                "AND p.categoria = ?";
+
+        try (PreparedStatement stm = db.prepareStatement(sql)) {
+            stm.setString(1, fechaInicio);
+            stm.setString(2, fechaFin);
+            stm.setString(3, categoriaId);
+
+            try (ResultSet rs = db.executeQuery(stm)) {
+                if (rs.next()) {
+                    totalImporte = rs.getDouble("total_importe");
+                }
+            }
+        }
+
+        return totalImporte;
     }
 
     public Linea from(ResultSet rs) throws Exception {
